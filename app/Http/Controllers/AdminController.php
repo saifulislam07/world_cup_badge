@@ -22,7 +22,7 @@ class AdminController extends Controller
     {
         $validated = $request->validate(['password' => ['required', 'string']]);
 
-        if ($validated['password'] !== env('ADMIN_PASSWORD', 'admin123')) {
+        if (!hash_equals($this->adminPassword(), $validated['password'])) {
             return back()->withErrors(['password' => 'Invalid admin password.']);
         }
 
@@ -36,6 +36,31 @@ class AdminController extends Controller
         $request->session()->forget('is_admin');
 
         return redirect()->route('admin.login');
+    }
+
+    private function adminPassword(): string
+    {
+        $password = (string) config('auth.admin_password', '');
+        $envPath = base_path('.env');
+
+        if (is_file($envPath) && is_readable($envPath)) {
+            foreach (file($envPath, FILE_IGNORE_NEW_LINES) ?: [] as $line) {
+                if (!str_starts_with(trim($line), 'ADMIN_PASSWORD=')) {
+                    continue;
+                }
+
+                $password = trim(substr($line, strlen('ADMIN_PASSWORD=')));
+                $quote = $password[0] ?? '';
+
+                if (($quote === '"' || $quote === "'") && str_ends_with($password, $quote)) {
+                    $password = substr($password, 1, -1);
+                }
+
+                break;
+            }
+        }
+
+        return $password !== '' ? $password : 'admin123';
     }
 
     public function dashboard()
