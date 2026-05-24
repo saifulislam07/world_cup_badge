@@ -45,6 +45,20 @@
         .table-wrap { width: 100%; overflow-x: auto; }
         .muted { color: var(--muted); }
         .pill { display: inline-block; border-radius: 999px; padding: 5px 9px; background: #eef4f7; font-weight: 900; font-size: 12px; }
+        .pagination { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 18px 0 0; padding: 0; list-style: none; }
+        .pagination li { display: inline-flex; }
+        .pagination a, .pagination span { min-width: 38px; min-height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; background: #fff; color: var(--ink); font-weight: 900; }
+        .pagination .active span { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); }
+        .pagination .disabled span { color: #98a2b3; background: #f2f4f7; }
+        nav[role="navigation"] > div:first-child { display: none; }
+        nav[role="navigation"] > div:last-child { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+        nav[role="navigation"] p { margin: 0; color: var(--muted); font-size: 13px; }
+        nav[role="navigation"] svg { width: 18px; height: 18px; }
+        .pager { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+        .pager-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .pager-button { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: #fff; color: var(--ink); font-weight: 900; }
+        .pager-button.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--green), var(--blue)); }
+        .pager-button.disabled { color: #98a2b3; background: #f2f4f7; }
         @media (max-width: 900px) {
             .admin-shell { grid-template-columns: 1fr; }
             .sidebar { position: static; height: auto; }

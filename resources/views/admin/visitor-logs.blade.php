@@ -89,6 +89,29 @@
                 </tbody>
             </table>
         </div>
-        {{ $logs->links() }}
+        <div class="pager">
+            <div class="muted">Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }} visits</div>
+            <div class="pager-actions">
+                @if ($logs->onFirstPage())
+                    <span class="pager-button disabled">Previous</span>
+                @else
+                    <a class="pager-button" href="{{ $logs->previousPageUrl() }}">Previous</a>
+                @endif
+
+                @foreach ($logs->getUrlRange(max(1, $logs->currentPage() - 2), min($logs->lastPage(), $logs->currentPage() + 2)) as $page => $url)
+                    @if ($page === $logs->currentPage())
+                        <span class="pager-button active">{{ $page }}</span>
+                    @else
+                        <a class="pager-button" href="{{ $url }}">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if ($logs->hasMorePages())
+                    <a class="pager-button" href="{{ $logs->nextPageUrl() }}">Next</a>
+                @else
+                    <span class="pager-button disabled">Next</span>
+                @endif
+            </div>
+        </div>
     </section>
 @endsection
