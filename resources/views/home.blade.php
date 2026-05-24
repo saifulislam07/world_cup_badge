@@ -278,6 +278,12 @@
             line-height: 1.45;
         }
 
+        .preview-note {
+            max-width: 390px;
+            margin: -4px 0 0;
+            text-align: center;
+        }
+
         .preview-wrap {
             grid-column: span 6;
             display: flex;
@@ -646,8 +652,12 @@
     <header class="topbar">
         <div class="brand"><span
                 class="brand-mark">26</span>{{ $settings['website_name'] ?? 'World Cup 2026 Badge Maker' }}</div>
-        <nav class="nav"><a href="{{ route('country-ranking') }}">Ranking</a><a class="admin-link"
-                href="{{ route('admin.login') }}">Admin</a></nav>
+        <nav class="nav">
+            <a href="{{ route('today-match') }}">Today's Match</a>
+            <a href="{{ route('country-ranking') }}">Ranking</a>
+            {{-- <a class="admin-link"
+                href="{{ route('admin.login') }}">Admin</a> --}}
+        </nav>
     </header>
 
     <main class="workspace">
@@ -695,6 +705,7 @@
                 <div class="bottom-country-name" id="bottomCountryName"></div>
                 <div class="footer-mark">Made for football fans</div>
             </article>
+            <p class="note preview-note">ছবিটি circle-এর ভিতরে drag করে নিজের মতো position ঠিক করতে পারবেন। zoom করতে mouse wheel বা pinch ব্যবহার করুন।</p>
             <button type="button" class="primary" id="downloadBtn">Download PNG</button>
         </section>
 

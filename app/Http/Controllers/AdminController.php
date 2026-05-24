@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\PlacardRecord;
 use App\Models\Setting;
+use App\Models\VisitorLog;
 use App\Models\WorldCupYear;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -141,6 +143,38 @@ class AdminController extends Controller
             'countries' => Country::orderBy('name')->get(),
             'years' => WorldCupYear::orderBy('year')->get(),
         ]);
+    }
+
+    public function visitorLogs(Request $request)
+    {
+        $selectedDate = $request->input('date', now()->toDateString());
+        $date = CarbonImmutable::parse($selectedDate)->toDateString();
+
+        $dailyStats = VisitorLog::query()
+            ->selectRaw('DATE(visited_at) as visit_date, COUNT(*) as total_visits, COUNT(DISTINCT ip_address) as unique_visitors')
+            ->groupBy('visit_date')
+            ->orderByDesc('visit_date')
+            ->limit(30)
+            ->get();
+
+        $pathStats = VisitorLog::query()
+            ->select('path', DB::raw('COUNT(*) as total'))
+            ->whereDate('visited_at', $date)
+            ->groupBy('path')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get();
+
+        $logs = VisitorLog::query()
+            ->when($request->filled('date'), fn ($query) => $query->whereDate('visited_at', $date))
+            ->when(!$request->filled('date'), fn ($query) => $query->whereDate('visited_at', $date))
+            ->when($request->filled('path'), fn ($query) => $query->where('path', 'like', '%' . $request->input('path') . '%'))
+            ->when($request->filled('ip'), fn ($query) => $query->where('ip_address', 'like', '%' . $request->input('ip') . '%'))
+            ->latest('visited_at')
+            ->paginate(30)
+            ->withQueryString();
+
+        return view('admin.visitor-logs', compact('dailyStats', 'pathStats', 'logs', 'date'));
     }
 
     private function countryTotals()

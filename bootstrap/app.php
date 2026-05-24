@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin.session' => \App\Http\Middleware\AdminSession::class,
+            'visitor.log' => \App\Http\Middleware\LogVisitor::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

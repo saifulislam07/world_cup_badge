@@ -23,7 +23,7 @@
         header { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 28px; background: #fff; border-bottom: 1px solid var(--line); box-shadow: 0 12px 30px rgba(16,24,40,.05); }
         .page-kicker { margin: 0 0 4px; color: var(--muted); font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
         h1 { margin: 0; font-size: 26px; }
-        main { width: min(1120px, 94vw); margin: 26px auto; }
+        main { width: 100%; margin: 26px auto; padding: 0 24px; }
         .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 18px; box-shadow: 0 18px 36px rgba(16,24,40,.06); overflow-x: auto; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
         .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: 0 14px 28px rgba(16,24,40,.05); }
@@ -38,16 +38,21 @@
         tr:hover td { background: #f9fafb; }
         .ok { color: var(--green); font-weight: 800; }
         .filters { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; align-items: end; }
+        .filters.compact { grid-template-columns: repeat(3, 1fr) auto; }
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .inline { display: flex; align-items: center; gap: 8px; }
         .inline input { width: auto; margin: 0; }
+        .table-wrap { width: 100%; overflow-x: auto; }
+        .muted { color: var(--muted); }
+        .pill { display: inline-block; border-radius: 999px; padding: 5px 9px; background: #eef4f7; font-weight: 900; font-size: 12px; }
         @media (max-width: 900px) {
             .admin-shell { grid-template-columns: 1fr; }
             .sidebar { position: static; height: auto; }
             nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .grid, .filters { grid-template-columns: 1fr; }
+            .grid, .filters, .filters.compact, .split { grid-template-columns: 1fr; }
             header { height: auto; padding: 18px; align-items: flex-start; flex-direction: column; }
         }
-        @media (max-width: 560px) { nav { grid-template-columns: 1fr; } }
+        @media (max-width: 560px) { nav { grid-template-columns: 1fr; } main { padding: 0 14px; } }
     </style>
 </head>
 <body>
@@ -60,6 +65,7 @@
                 <a class="nav-button {{ request()->routeIs('admin.years') ? 'active' : '' }}" href="{{ route('admin.years') }}">Years <span>&gt;</span></a>
                 <a class="nav-button {{ request()->routeIs('admin.settings') ? 'active' : '' }}" href="{{ route('admin.settings') }}">Settings <span>&gt;</span></a>
                 <a class="nav-button {{ request()->routeIs('admin.records') ? 'active' : '' }}" href="{{ route('admin.records') }}">Records <span>&gt;</span></a>
+                <a class="nav-button {{ request()->routeIs('admin.visitor-logs') ? 'active' : '' }}" href="{{ route('admin.visitor-logs') }}">Visitor Logs <span>&gt;</span></a>
                 <a class="nav-button site-link" href="{{ route('home') }}">View Site <span>+</span></a>
                 <form class="logout-form" method="post" action="{{ route('admin.logout') }}">@csrf<button class="logout-button" type="submit">Logout</button></form>
             </nav>
