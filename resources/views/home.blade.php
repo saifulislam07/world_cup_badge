@@ -11,13 +11,15 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
     <style>
         :root {
-            --ink: #14213d;
-            --muted: #607087;
-            --line: #d9e2ec;
+            --ink: #101828;
+            --muted: #667085;
+            --line: #d0d5dd;
             --panel: #ffffff;
-            --grass: #167c54;
-            --gold: #f2b705;
-            --red: #d7263d;
+            --grass: #007a3d;
+            --deep: #063d2a;
+            --gold: #ffb703;
+            --red: #d62839;
+            --blue: #005eb8;
         }
 
         * {
@@ -32,53 +34,130 @@
             margin: 0;
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
             color: var(--ink);
-            background: linear-gradient(180deg, #f7fbff 0%, #eef4f8 100%);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .88), rgba(247, 250, 252, .96)),
+                repeating-linear-gradient(90deg, rgba(0, 122, 61, .06) 0 70px, rgba(0, 94, 184, .04) 70px 140px);
         }
 
         a {
             color: inherit;
+            text-decoration: none;
         }
 
         .topbar {
-            min-height: 56px;
+            min-height: 72px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
             padding: 0 5vw;
-            background: #fff;
-            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, .92);
+            border-bottom: 1px solid rgba(208, 213, 221, .9);
+            box-shadow: 0 12px 30px rgba(16, 24, 40, .06);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(14px);
         }
 
         .brand {
-            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 950;
+            letter-spacing: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            background: linear-gradient(135deg, var(--grass), var(--blue));
+            box-shadow: 0 10px 22px rgba(0, 122, 61, .22);
         }
 
         .nav {
             display: flex;
-            gap: 14px;
-            color: var(--muted);
+            gap: 10px;
+            align-items: center;
             font-size: 14px;
         }
 
+        .nav a {
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 10px 15px;
+            font-weight: 900;
+            color: var(--ink);
+            background: #fff;
+            transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+        }
+
+        .nav a:hover {
+            transform: translateY(-1px);
+            border-color: rgba(0, 122, 61, .35);
+            box-shadow: 0 10px 20px rgba(16, 24, 40, .08);
+        }
+
+        .nav .admin-link {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--deep), var(--grass));
+            box-shadow: 0 12px 24px rgba(0, 122, 61, .2);
+        }
+
         .hero {
-            padding: 32px 5vw 18px;
-            background: linear-gradient(135deg, #f8fcff 0%, #f2fff8 100%);
-            border-bottom: 1px solid var(--line);
+            min-height: 248px;
+            padding: 34px 5vw 28px;
+            display: grid;
+            align-items: end;
+            background:
+                linear-gradient(90deg, rgba(6, 61, 42, .96), rgba(0, 94, 184, .80)),
+                radial-gradient(circle at 82% 25%, rgba(255, 183, 3, .42), transparent 28%),
+                linear-gradient(135deg, #063d2a, #005eb8);
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 5vw -52px auto;
+            width: min(360px, 52vw);
+            aspect-ratio: 1;
+            border: 18px solid rgba(255, 255, 255, .16);
+            border-radius: 50%;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .08em;
         }
 
         .hero h1 {
             margin: 0;
-            font-size: clamp(32px, 5vw, 58px);
+            font-size: clamp(34px, 5vw, 62px);
             line-height: 1;
             letter-spacing: 0;
             max-width: 920px;
+            position: relative;
+            z-index: 1;
         }
 
         .hero p {
             max-width: 780px;
-            color: var(--muted);
+            color: rgba(255, 255, 255, .82);
             font-size: 18px;
+            position: relative;
+            z-index: 1;
         }
 
         .workspace {
@@ -94,7 +173,7 @@
             border: 1px solid var(--line);
             border-radius: 8px;
             padding: 22px;
-            box-shadow: 0 18px 34px rgba(20, 33, 61, .08);
+            box-shadow: 0 20px 40px rgba(16, 24, 40, .08);
         }
 
         .details-panel {
@@ -122,6 +201,13 @@
             padding: 12px 13px;
             background: #fff;
             color: var(--ink);
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--grass);
+            box-shadow: 0 0 0 4px rgba(0, 122, 61, .12);
         }
 
         input[type="color"] {
@@ -175,9 +261,9 @@
         }
 
         .primary {
-            background: var(--grass);
+            background: linear-gradient(135deg, var(--grass), var(--blue));
             color: #fff;
-            box-shadow: 0 10px 18px rgba(22, 124, 84, .18);
+            box-shadow: 0 14px 26px rgba(0, 122, 61, .22);
         }
 
         .ghost {
@@ -202,8 +288,8 @@
             min-height: 430px;
             overflow: hidden;
             background:
-                radial-gradient(circle at 50% 50%, rgba(22, 124, 84, .10), transparent 34%),
-                linear-gradient(135deg, #ffffff 0%, #f4f9fb 100%);
+                linear-gradient(rgba(255, 255, 255, .86), rgba(255, 255, 255, .92)),
+                repeating-linear-gradient(90deg, rgba(0, 122, 61, .12) 0 46px, rgba(0, 94, 184, .08) 46px 92px);
             border-color: #cfe0ea;
         }
 
@@ -274,6 +360,9 @@
             box-shadow: none;
             transform-origin: center;
             transform: translate(-50%, -50%) scale(1);
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         .photo-placeholder {
@@ -301,6 +390,7 @@
             z-index: 5;
             text-align: center;
             transform: translateY(-50%);
+            pointer-events: none;
         }
 
         .crest-box img {
@@ -331,6 +421,7 @@
             -webkit-text-stroke: .45px rgba(255, 255, 255, .72);
             paint-order: stroke fill;
             text-shadow: 0 2px 0 rgba(0, 0, 0, .72), 0 0 10px var(--flag-shadow), 0 5px 9px rgba(0, 0, 0, .72);
+            pointer-events: none;
         }
 
         .bottom-country-name {
@@ -347,6 +438,7 @@
             -webkit-text-stroke: .6px rgba(255, 255, 255, .72);
             paint-order: stroke fill;
             text-shadow: 0 3px 0 rgba(0, 0, 0, .72), 0 0 14px var(--flag-shadow), 0 6px 10px rgba(0, 0, 0, .86);
+            pointer-events: none;
         }
 
         .footer-mark {
@@ -485,6 +577,22 @@
         }
 
         @media (max-width: 560px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                padding-top: 14px;
+                padding-bottom: 14px;
+            }
+
+            .nav {
+                width: 100%;
+            }
+
+            .nav a {
+                flex: 1;
+                text-align: center;
+            }
+
             .row {
                 grid-template-columns: 1fr;
             }
@@ -536,12 +644,11 @@
 
 <body>
     <header class="topbar">
-        <div class="brand">{{ $settings['website_name'] ?? 'World Cup 2026 Badge Maker' }}</div>
-        <nav class="nav"><a href="{{ route('country-ranking') }}">Ranking</a><a
+        <div class="brand"><span
+                class="brand-mark">26</span>{{ $settings['website_name'] ?? 'World Cup 2026 Badge Maker' }}</div>
+        <nav class="nav"><a href="{{ route('country-ranking') }}">Ranking</a><a class="admin-link"
                 href="{{ route('admin.login') }}">Admin</a></nav>
     </header>
-
-
 
     <main class="workspace">
         <section class="panel details-panel">
@@ -567,7 +674,11 @@
                 </div>
                 <div class="actions">
                 </div>
-                <p class="note">If download has a problem, copy the link and try in Google Chrome or Firefox.</p>
+                <p class="note " style="color: red">যদি ডাউনলোডে সমস্যা হয়, তাহলে লিংকটি কপি করে Google Chrome অথবা
+                    Firefox
+                    ব্রাউজারে
+                    খুলে আবার চেষ্টা করুন।</p>
+
                 <p class="status" id="status"></p>
             </form>
         </section>
@@ -632,6 +743,8 @@
                 y: 0,
                 zoom: 100
             };
+            mainPhoto.draggable = false;
+            badgeCircle.addEventListener('dragstart', (event) => event.preventDefault());
             const flagColors = {
                 ar: '#75aadb',
                 au: '#0057b8',
@@ -748,6 +861,7 @@
                     const mainPhoto = document.getElementById('mainPhoto');
                     mainPhoto.src = reader.result;
                     mainPhoto.hidden = false;
+                    setPhotoControls(0, 0, 100);
                     const placeholder = document.getElementById('photoPlaceholder');
                     placeholder.hidden = true;
                     placeholder.style.display = 'none';
@@ -756,9 +870,10 @@
             });
             const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
             const setPhotoControls = (x, y, zoom) => {
+                const dragLimit = Math.max(80, Math.round(badgeCircle.clientWidth * .38));
                 photoState = {
-                    x: Math.round(clamp(x, -80, 80)),
-                    y: Math.round(clamp(y, -80, 80)),
+                    x: Math.round(clamp(x, -dragLimit, dragLimit)),
+                    y: Math.round(clamp(y, -dragLimit, dragLimit)),
                     zoom: Math.round(clamp(zoom, 100, 220)),
                 };
                 updatePreview();
@@ -769,6 +884,8 @@
                 return Math.hypot(points[0].clientX - points[1].clientX, points[0].clientY - points[1].clientY);
             };
             badgeCircle.addEventListener('pointerdown', (event) => {
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                event.preventDefault();
                 badgeCircle.setPointerCapture(event.pointerId);
                 pointers.set(event.pointerId, event);
                 if (pointers.size === 1) {
@@ -788,6 +905,7 @@
             });
             badgeCircle.addEventListener('pointermove', (event) => {
                 if (!pointers.has(event.pointerId)) return;
+                event.preventDefault();
                 pointers.set(event.pointerId, event);
                 if (pointers.size === 1 && dragStart) {
                     setPhotoControls(
@@ -801,7 +919,7 @@
                     setPhotoControls(photoState.x, photoState.y, nextZoom);
                 }
             });
-            ['pointerup', 'pointercancel', 'pointerleave'].forEach(eventName => {
+            ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(eventName => {
                 badgeCircle.addEventListener(eventName, (event) => {
                     pointers.delete(event.pointerId);
                     if (pointers.size === 0) {
