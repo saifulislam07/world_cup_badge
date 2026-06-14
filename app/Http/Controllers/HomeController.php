@@ -8,7 +8,9 @@ use App\Models\Setting;
 use App\Models\WorldCupMatch;
 use App\Models\WorldCupYear;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
@@ -39,13 +41,20 @@ class HomeController extends Controller
     public function todayMatches()
     {
         $timezone = 'Asia/Dhaka';
-        $today = CarbonImmutable::now($timezone)->startOfDay();
+        $now = CarbonImmutable::now($timezone);
+        $today = $now->startOfDay();
         $matches = WorldCupMatch::query()
             ->orderBy('kickoff_at')
             ->orderBy('match_number')
             ->get()
-            ->map(function (WorldCupMatch $match) use ($timezone) {
+            ->map(function (WorldCupMatch $match) use ($timezone, $now) {
                 $kickoff = $match->kickoff_at->toImmutable()->setTimezone($timezone);
+
+                $status = match (true) {
+                    $kickoff->greaterThan($now) => 'upcoming',
+                    $kickoff->addMinutes(110)->greaterThan($now) => 'live',
+                    default => 'finished',
+                };
 
                 return [
                     'match_number' => $match->match_number,
@@ -58,12 +67,17 @@ class HomeController extends Controller
                     'kickoff_bdt' => $kickoff,
                     'date_key' => $kickoff->toDateString(),
                     'time_label' => $kickoff->format('h:i A'),
+                    'status' => $status,
                 ];
             });
 
         $todayMatches = $matches
             ->where('date_key', $today->toDateString())
-            ->sortBy('kickoff_bdt')
+            ->sortBy(fn ($m) => match ($m['status']) {
+                'live' => 0,
+                'upcoming' => 1,
+                default => 2,
+            })
             ->values();
 
         $nextMatch = $matches
@@ -97,5 +111,55 @@ class HomeController extends Controller
             'fixtureTeams' => $fixtureTeams,
             'fixtureStages' => $fixtureStages,
         ]);
+    }
+
+    public function wcResults()
+    {
+        $apiKey = env('FOOTBALL_API_KEY');
+        if (!$apiKey) {
+            return response()->json(['configured' => false]);
+        }
+
+        $timezone = 'Asia/Dhaka';
+        $now = CarbonImmutable::now($timezone);
+        $fromUtc = $now->startOfDay()->setTimezone('UTC')->format('Y-m-d');
+        $toUtc = $now->endOfDay()->setTimezone('UTC')->format('Y-m-d');
+
+        $data = Cache::remember("wc2026_results_{$fromUtc}", 120, function () use ($apiKey, $fromUtc, $toUtc) {
+            $response = Http::withHeaders(['X-Auth-Token' => $apiKey])
+                ->timeout(8)
+                ->get('https://api.football-data.org/v4/competitions/WC/matches', [
+                    'dateFrom' => $fromUtc,
+                    'dateTo' => $toUtc,
+                ]);
+            return $response->successful() ? $response->json() : null;
+        });
+
+        if (!$data) {
+            return response()->json(['error' => 'API fetch failed'], 502);
+        }
+
+        return response()->json(['configured' => true, 'data' => $data]);
+    }
+
+    public function wcStandings()
+    {
+        $apiKey = env('FOOTBALL_API_KEY');
+        if (!$apiKey) {
+            return response()->json(['configured' => false]);
+        }
+
+        $data = Cache::remember('wc2026_standings', 300, function () use ($apiKey) {
+            $response = Http::withHeaders(['X-Auth-Token' => $apiKey])
+                ->timeout(8)
+                ->get('https://api.football-data.org/v4/competitions/WC/standings');
+            return $response->successful() ? $response->json() : null;
+        });
+
+        if (!$data) {
+            return response()->json(['error' => 'API fetch failed'], 502);
+        }
+
+        return response()->json(['configured' => true, 'data' => $data]);
     }
 }

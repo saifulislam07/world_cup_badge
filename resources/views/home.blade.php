@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
         content="{{ $settings['meta_description'] ?? 'Create a custom football supporter placard.' }}">
+    <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $settings['meta_title'] ?? 'World Cup 2026 Supporter Badge Generator' }}">
+    <meta property="og:description" content="{{ $settings['meta_description'] ?? 'Create a custom football supporter placard.' }}">
+    <meta property="og:image" content="{{ url('images/wc2026-mascot.jpg') }}">
+    <meta property="og:image:width" content="696">
+    <meta property="og:image:height" content="464">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ url('images/wc2026-mascot.jpg') }}">
     <title>{{ $settings['meta_title'] ?? 'World Cup 2026 Supporter Badge Generator' }}</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
     <style>

@@ -9,6 +9,8 @@ Route::get('/', [HomeController::class, 'index'])->middleware('visitor.log')->na
 Route::get('/today-match', [HomeController::class, 'todayMatches'])->middleware('visitor.log')->name('today-match');
 Route::post('/download-count', [PlacardController::class, 'storeDownload'])->middleware('throttle:20,1')->name('download-count');
 Route::get('/country-ranking', [PlacardController::class, 'ranking'])->middleware('visitor.log')->name('country-ranking');
+Route::get('/api/wc2026/results', [HomeController::class, 'wcResults'])->middleware('throttle:30,1');
+Route::get('/api/wc2026/standings', [HomeController::class, 'wcStandings'])->middleware('throttle:30,1');
 
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'authenticate'])->name('admin.authenticate');

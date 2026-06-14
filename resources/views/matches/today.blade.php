@@ -1,10 +1,22 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="bn">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>World Cup 2026 Fixture Schedule - Bangladesh Time</title>
+    <meta name="description" content="FIFA World Cup 2026 ম্যাচ সূচি — আজকের ম্যাচ, লাইভ স্কোর ও পয়েন্ট টেবিল। সব সময় Bangladesh Standard Time (BDT) অনুযায়ী।">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="World Cup 2026 ম্যাচ সূচি — Bangladesh Time">
+    <meta property="og:description" content="আজকের ম্যাচ, লাইভ স্কোর ও পয়েন্ট টেবিল — সব BDT সময়ে।">
+    <meta property="og:image" content="{{ url('images/wc2026-mascot.jpg') }}">
+    <meta property="og:image:width" content="696">
+    <meta property="og:image:height" content="464">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="World Cup 2026 ম্যাচ সূচি — Bangladesh Time">
+    <meta name="twitter:description" content="আজকের ম্যাচ, লাইভ স্কোর ও পয়েন্ট টেবিল — সব BDT সময়ে।">
+    <meta name="twitter:image" content="{{ url('images/wc2026-mascot.jpg') }}">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
     <style>
         :root {
@@ -209,8 +221,7 @@
             margin-bottom: 18px;
         }
 
-        .panel,
-        .match-card {
+        .panel {
             background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 8px;
@@ -237,22 +248,33 @@
         }
 
         .match-list {
-            display: contents;
             margin-bottom: 22px;
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
         }
 
         .match-card {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
+            padding: 16px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 18px 36px rgba(16,24,40,.06);
         }
 
         .team {
             min-width: 0;
-            font-size: clamp(22px, 4vw, 36px);
-            line-height: 1;
+            font-size: clamp(16px, 2.4vw, 24px);
+            line-height: 1.2;
             font-weight: 950;
+            overflow-wrap: anywhere;
         }
 
         .team.away {
@@ -260,17 +282,84 @@
         }
 
         .kickoff {
-            min-width: 132px;
+            min-width: 90px;
             border-radius: 8px;
-            padding: 13px 14px;
+            padding: 10px 12px;
             text-align: center;
             color: #fff;
+            font-size: 13px;
             background: linear-gradient(135deg, var(--green), var(--blue));
         }
 
         .kickoff strong {
             display: block;
-            font-size: 22px;
+            font-size: 18px;
+        }
+
+        .kickoff.kickoff--live {
+            background: linear-gradient(135deg, var(--red), #9b1a28);
+        }
+
+        .kickoff.kickoff--done {
+            background: linear-gradient(135deg, #475467, #344054);
+        }
+
+        .kickoff-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            margin-bottom: 4px;
+            animation: blink 1.1s ease-in-out infinite;
+        }
+
+        .match-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 950;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .pill-live {
+            background: rgba(214,40,57,.09);
+            color: var(--red);
+            border-color: rgba(214,40,57,.28);
+        }
+
+        .pill-upcoming {
+            background: rgba(0,94,184,.09);
+            color: var(--blue);
+            border-color: rgba(0,94,184,.28);
+        }
+
+        .pill-done {
+            background: rgba(71,84,103,.09);
+            color: #475467;
+            border-color: rgba(71,84,103,.22);
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            flex-shrink: 0;
+            animation: blink 1.1s ease-in-out infinite;
         }
 
         .meta {
@@ -597,22 +686,17 @@
                 white-space: normal;
             }
 
-            .match-card {
+            .match-grid {
                 grid-template-columns: 1fr;
-                text-align: center;
             }
 
             .team.away {
-                text-align: center;
-            }
-
-            .kickoff {
-                width: 100%;
+                text-align: right;
             }
 
             .meta {
                 flex-direction: column;
-                align-items: center;
+                align-items: flex-start;
             }
 
             .fixture-tools,
@@ -655,6 +739,268 @@
             .fixture-poster::after {
                 display: none;
             }
+        }
+
+        /* ── Live Scores & Standings ───────────────────────────────── */
+        .api-section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--red);
+            color: #fff;
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #fff;
+            animation: blink 1.1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .35; transform: scale(.78); }
+        }
+
+        .refresh-btn {
+            margin-left: auto;
+            padding: 9px 16px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--ink);
+            transition: border-color .15s, color .15s;
+        }
+
+        .refresh-btn:hover { border-color: var(--green); color: var(--green); }
+
+        .loading-skeleton {
+            background: #f5f7fa;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 28px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .api-notice {
+            background: #fffbeb;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        .api-notice h3 { margin: 0 0 8px; font-size: 18px; }
+        .api-notice code { background: #f0f4ff; border-radius: 4px; padding: 2px 6px; font-size: 13px; }
+        .api-notice a { color: var(--blue); text-decoration: underline; }
+
+        /* Result cards */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 14px;
+        }
+
+        .result-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 12px rgba(16,24,40,.05);
+            transition: box-shadow .15s;
+        }
+
+        .result-card:hover { box-shadow: 0 6px 20px rgba(16,24,40,.1); }
+        .result-card.s-live { border-color: var(--red); box-shadow: 0 4px 20px rgba(214,40,57,.13); }
+        .result-card.s-finished { border-left: 4px solid var(--green); }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .result-group {
+            font-size: 12px;
+            font-weight: 950;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .result-status {
+            font-size: 11px;
+            font-weight: 950;
+            padding: 3px 9px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .s-live .result-status { background: var(--red); color: #fff; }
+        .s-finished .result-status { background: #e8f5ee; color: var(--green); }
+        .s-scheduled .result-status { background: #eef2ff; color: var(--blue); }
+        .s-paused .result-status { background: var(--gold); color: #101828; }
+
+        .result-teams {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0 10px;
+        }
+
+        .result-team {
+            font-size: 17px;
+            font-weight: 950;
+            line-height: 1.25;
+        }
+
+        .result-team.away { text-align: right; }
+
+        .result-score-box {
+            min-width: 78px;
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: #fff;
+        }
+
+        .result-score { font-size: 26px; font-weight: 950; line-height: 1; }
+        .result-score-label { font-size: 10px; opacity: .82; margin-top: 3px; }
+
+        .result-footer {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 800;
+            gap: 8px;
+        }
+
+        /* Standings */
+        .standings-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .std-tab {
+            padding: 8px 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--ink);
+            transition: all .15s;
+        }
+
+        .std-tab:hover { border-color: var(--green); color: var(--green); }
+        .std-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+        .std-panel { display: none; overflow-x: auto; }
+        .std-panel.active { display: block; }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(16,24,40,.06);
+            font-size: 14px;
+        }
+
+        .standings-table thead th {
+            background: linear-gradient(135deg, #063d2a, var(--blue));
+            color: rgba(255,255,255,.92);
+            padding: 11px 14px;
+            font-size: 11px;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .standings-table thead th:first-child,
+        .standings-table thead th:nth-child(2) { text-align: left; }
+
+        .standings-table tbody td {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--line);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .standings-table tbody td:first-child,
+        .standings-table tbody td:nth-child(2) { text-align: left; }
+        .standings-table tbody tr:last-child td { border-bottom: none; }
+        .standings-table tbody tr:nth-child(1) td,
+        .standings-table tbody tr:nth-child(2) td { background: rgba(0,122,61,.04); }
+        .standings-table tbody tr:hover td { background: rgba(0,94,184,.04); }
+
+        .pos-num {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 950;
+            font-size: 12px;
+        }
+
+        .p1, .p2 { background: var(--green); color: #fff; }
+        .p3 { background: var(--gold); color: #101828; }
+        .p4 { background: var(--line); color: var(--muted); }
+
+        .team-cell { font-weight: 900; white-space: nowrap; }
+        .pts-cell { font-weight: 950; font-size: 16px; color: var(--green); }
+        .gd-pos { color: var(--green); }
+        .gd-neg { color: var(--red); }
+
+        @media (max-width: 760px) {
+            .result-grid { grid-template-columns: 1fr; }
+            .section-header { gap: 8px; }
+            .refresh-btn { margin-left: 0; }
         }
 
         @media (max-width: 560px) {
@@ -738,47 +1084,138 @@
 
     <main>
         <section class="summary">
+            @php
+                $liveCount     = $todayMatches->where('status', 'live')->count();
+                $upcomingCount = $todayMatches->where('status', 'upcoming')->count();
+                $finishedCount = $todayMatches->where('status', 'finished')->count();
+            @endphp
             <div class="panel">
                 <h2>আজকের ম্যাচ</h2>
-                <p class="muted">{{ $todayLabel }} - Bangladesh Standard Time</p>
+                <p class="muted">{{ $todayLabel }}</p>
                 <div class="count">{{ $todayMatches->count() }}</div>
-                <p class="muted">টি ম্যাচ আজকের fixture তালিকায় আছে।</p>
+                <p class="muted">
+                    @if ($todayMatches->isEmpty())
+                        আজ কোনো ম্যাচ নেই
+                    @else
+                        @if ($liveCount > 0)<span style="color:var(--red);font-weight:950">{{ $liveCount }} লাইভ</span>{{ ($upcomingCount > 0 || $finishedCount > 0) ? ' · ' : '' }}@endif
+                        @if ($upcomingCount > 0){{ $upcomingCount }} আসন্ন{{ $finishedCount > 0 ? ' · ' : '' }}@endif
+                        @if ($finishedCount > 0){{ $finishedCount }} শেষ@endif
+                    @endif
+                </p>
             </div>
+
             <div class="panel">
                 <h2>পরবর্তী ম্যাচ</h2>
                 @if ($nextMatch)
-                    <p><strong>{{ $nextMatch['home'] }} vs {{ $nextMatch['away'] }}</strong></p>
-                    <p class="muted">{{ $nextMatch['kickoff_bdt']->format('F j, Y h:i A') }} BDT</p>
+                    <p style="margin:8px 0 4px"><strong>{{ $nextMatch['home'] }} vs {{ $nextMatch['away'] }}</strong></p>
+                    <p class="muted" style="margin:0">{{ $nextMatch['kickoff_bdt']->format('D, M j') }} — {{ $nextMatch['kickoff_bdt']->format('h:i A') }} BDT</p>
+                    <p class="muted" style="margin:4px 0 0;font-size:13px">{{ $nextMatch['group_label'] }} · {{ $nextMatch['venue'] }}</p>
                 @else
-                    <p class="muted">আর কোনো ম্যাচ পাওয়া যায়নি।</p>
+                    <p class="muted">টুর্নামেন্টের সব ম্যাচ শেষ।</p>
                 @endif
             </div>
 
-            @if ($todayMatches->isEmpty())
-                <div class="panel empty">
-                    <strong>আজ কোনো ম্যাচ নেই</strong>
-                    <span class="muted">World Cup 2026 শুরু হলে এই পেজে আজকের ম্যাচ Bangladesh সময় অনুযায়ী দেখা
-                        যাবে।</span>
-                </div>
-            @endif
+            <div class="panel">
+                <h2>Bangladesh সময়</h2>
+                <p class="muted">UTC +6:00 (BST)</p>
+                <div class="count" style="font-size:32px" id="bdtClock">--:--</div>
+                <p class="muted" id="bdtDate">লোড হচ্ছে…</p>
+            </div>
         </section>
 
         @if ($todayMatches->isNotEmpty())
             <section class="match-list">
-                @foreach ($todayMatches as $match)
-                    <article class="match-card">
-                        <div class="team">{{ $match['home'] }}</div>
-                        <div class="kickoff">
-                            <span>Kickoff</span><strong>{{ $match['time_label'] }}</strong><span>BDT</span></div>
-                        <div class="team away">{{ $match['away'] }}</div>
-                        <div class="meta">
-                            <span>{{ $match['group_label'] }}</span>
-                            <span>{{ $match['venue'] }}</span>
-                        </div>
-                    </article>
-                @endforeach
+                @php
+                    $liveMatches     = $todayMatches->where('status', 'live');
+                    $upcomingMatches = $todayMatches->where('status', 'upcoming');
+                    $finishedMatches = $todayMatches->where('status', 'finished');
+                @endphp
+
+                <div class="match-status-bar">
+                    @if ($liveMatches->isNotEmpty())
+                        <span class="status-pill pill-live"><span class="pill-dot"></span>{{ $liveMatches->count() }} লাইভ চলছে</span>
+                    @endif
+                    @if ($upcomingMatches->isNotEmpty())
+                        <span class="status-pill pill-upcoming">{{ $upcomingMatches->count() }} আসন্ন ম্যাচ</span>
+                    @endif
+                    @if ($finishedMatches->isNotEmpty())
+                        <span class="status-pill pill-done">{{ $finishedMatches->count() }} শেষ হয়েছে</span>
+                    @endif
+                </div>
+
+                <div class="match-grid">
+                    @foreach ($liveMatches as $match)
+                        <article class="match-card">
+                            <div class="team">{{ $match['home'] }}</div>
+                            <div class="kickoff kickoff--live">
+                                <span class="kickoff-dot"></span>
+                                <strong>লাইভ</strong>
+                                <span>{{ $match['time_label'] }}</span>
+                            </div>
+                            <div class="team away">{{ $match['away'] }}</div>
+                            <div class="meta">
+                                <span>{{ $match['group_label'] }}</span>
+                                <span>{{ $match['venue'] }}</span>
+                            </div>
+                        </article>
+                    @endforeach
+
+                    @foreach ($upcomingMatches as $match)
+                        <article class="match-card">
+                            <div class="team">{{ $match['home'] }}</div>
+                            <div class="kickoff">
+                                <span>Kickoff</span>
+                                <strong>{{ $match['time_label'] }}</strong>
+                                <span>BDT</span>
+                            </div>
+                            <div class="team away">{{ $match['away'] }}</div>
+                            <div class="meta">
+                                <span>{{ $match['group_label'] }}</span>
+                                <span>{{ $match['venue'] }}</span>
+                            </div>
+                        </article>
+                    @endforeach
+
+                    @foreach ($finishedMatches as $match)
+                        <article class="match-card">
+                            <div class="team">{{ $match['home'] }}</div>
+                            <div class="kickoff kickoff--done">
+                                <span>{{ $match['time_label'] }}</span>
+                                <strong>শেষ</strong>
+                                <span>FT</span>
+                            </div>
+                            <div class="team away">{{ $match['away'] }}</div>
+                            <div class="meta">
+                                <span>{{ $match['group_label'] }}</span>
+                                <span>{{ $match['venue'] }}</span>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </section>
         @endif
+
+        {{-- Live Scores --}}
+        <section class="api-section">
+            <div class="section-header">
+                <h2>আজকের ম্যাচ স্কোর</h2>
+                <span class="live-badge" id="liveBadge" hidden><span class="pulse-dot"></span> লাইভ</span>
+                <button class="refresh-btn" id="refreshResults" type="button">↻ রিফ্রেশ</button>
+            </div>
+            <div id="resultsContainer">
+                <div class="loading-skeleton">স্কোর লোড হচ্ছে…</div>
+            </div>
+        </section>
+
+        {{-- Points Table --}}
+        <section class="api-section">
+            <div class="section-header">
+                <h2>পয়েন্ট টেবিল</h2>
+            </div>
+            <div id="standingsContainer">
+                <div class="loading-skeleton">পয়েন্ট টেবিল লোড হচ্ছে…</div>
+            </div>
+        </section>
 
         <section>
             <div class="fixture-tools">
@@ -859,6 +1296,192 @@
     </main>
 
     <script>
+        /* ── Live Scores & Standings ─────────────────────────────── */
+        (function () {
+            function bdtTime(utcStr) {
+                const d = new Date(utcStr);
+                const utcMs = d.getTime();
+                const bdtMs = utcMs + 6 * 3600 * 1000;
+                const b = new Date(bdtMs);
+                const h = b.getUTCHours(), m = b.getUTCMinutes();
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                const h12 = String(h % 12 || 12).padStart(2, '0');
+                return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+            }
+
+            const STATUS_LIVE = ['IN_PLAY', 'PAUSED', 'HALFTIME'];
+            const STATUS_DONE = ['FINISHED', 'FULL_TIME', 'EXTRA_TIME', 'PENALTY_SHOOTOUT'];
+
+            function statusBn(s, min) {
+                if (s === 'IN_PLAY') return min ? `${min}'` : 'লাইভ';
+                if (s === 'HALFTIME' || s === 'PAUSED') return 'বিরতি';
+                if (STATUS_DONE.includes(s)) return 'শেষ';
+                if (s === 'TIMED' || s === 'SCHEDULED') return 'নির্ধারিত';
+                if (s === 'POSTPONED') return 'স্থগিত';
+                if (s === 'CANCELLED') return 'বাতিল';
+                return s;
+            }
+
+            function cardClass(s) {
+                if (STATUS_LIVE.includes(s)) return 's-live';
+                if (STATUS_DONE.includes(s)) return 's-finished';
+                return 's-scheduled';
+            }
+
+            function scoreDisplay(match) {
+                const s = match.score;
+                const ft = s?.fullTime;
+                if (ft && ft.home !== null) return `${ft.home} – ${ft.away}`;
+                if (STATUS_LIVE.includes(match.status)) {
+                    const ht = s?.halfTime;
+                    return (ht && ht.home !== null) ? `${ht.home} – ${ht.away}` : '– –';
+                }
+                return 'vs';
+            }
+
+            function renderCard(m) {
+                const home = m.homeTeam?.shortName || m.homeTeam?.name || '?';
+                const away = m.awayTeam?.shortName || m.awayTeam?.name || '?';
+                const group = m.group ? m.group.replace('GROUP_', 'গ্রুপ ') : (m.stage || '');
+                const cls = cardClass(m.status);
+                const score = scoreDisplay(m);
+                const isLive = STATUS_LIVE.includes(m.status);
+                return `
+                <div class="result-card ${cls}">
+                    <div class="result-header">
+                        <span class="result-group">${group}</span>
+                        <span class="result-status">${statusBn(m.status, m.minute)}</span>
+                    </div>
+                    <div class="result-teams">
+                        <div class="result-team">${home}</div>
+                        <div class="result-score-box">
+                            <div class="result-score">${score}</div>
+                            ${isLive ? '<div class="result-score-label">লাইভ স্কোর</div>' : ''}
+                        </div>
+                        <div class="result-team away">${away}</div>
+                    </div>
+                    <div class="result-footer">
+                        <span>🕐 ${bdtTime(m.utcDate)} BDT</span>
+                        <span>${(m.venue?.name || '').split(',')[0]}</span>
+                    </div>
+                </div>`;
+            }
+
+            async function loadResults() {
+                const box = document.getElementById('resultsContainer');
+                const badge = document.getElementById('liveBadge');
+                if (!box) return;
+                try {
+                    const r = await fetch('/api/wc2026/results');
+                    const j = await r.json();
+
+                    if (!j.configured) {
+                        box.innerHTML = `<div class="api-notice">
+                            <h3>⚙️ API Key প্রয়োজন</h3>
+                            <p>Live score দেখতে <a href="https://www.football-data.org/client/register" target="_blank" rel="noopener">football-data.org</a>-এ বিনামূল্যে রেজিস্ট্রেশন করে <code>.env</code> ফাইলে <code>FOOTBALL_API_KEY=আপনার_কী</code> যোগ করুন।</p>
+                        </div>`;
+                        return;
+                    }
+
+                    if (j.error) { box.innerHTML = '<p class="muted" style="padding:16px">API থেকে ডেটা আনতে সমস্যা হয়েছে।</p>'; return; }
+
+                    const matches = j.data?.matches || [];
+                    if (matches.length === 0) {
+                        box.innerHTML = '<p class="muted" style="padding:16px">আজকের কোনো ম্যাচ স্কোর পাওয়া যায়নি।</p>';
+                        return;
+                    }
+
+                    const hasLive = matches.some(m => STATUS_LIVE.includes(m.status));
+                    if (badge) badge.hidden = !hasLive;
+                    box.innerHTML = `<div class="result-grid">${matches.map(renderCard).join('')}</div>`;
+
+                    if (hasLive) setTimeout(loadResults, 60000);
+                } catch (e) {
+                    box.innerHTML = '<p class="muted" style="padding:16px">রেজাল্ট লোড করতে সমস্যা হয়েছে।</p>';
+                }
+            }
+
+            async function loadStandings() {
+                const box = document.getElementById('standingsContainer');
+                if (!box) return;
+                try {
+                    const r = await fetch('/api/wc2026/standings');
+                    const j = await r.json();
+
+                    if (!j.configured) {
+                        box.innerHTML = `<div class="api-notice">
+                            <h3>⚙️ API Key প্রয়োজন</h3>
+                            <p><code>.env</code> ফাইলে <code>FOOTBALL_API_KEY</code> সেট করলে এখানে পয়েন্ট টেবিল দেখাবে।</p>
+                        </div>`;
+                        return;
+                    }
+
+                    if (j.error) { box.innerHTML = '<p class="muted" style="padding:16px">API থেকে ডেটা আনতে সমস্যা হয়েছে।</p>'; return; }
+
+                    const groups = (j.data?.standings || []).filter(s => s.type === 'TOTAL');
+                    if (groups.length === 0) {
+                        box.innerHTML = '<p class="muted" style="padding:16px">পয়েন্ট টেবিল এখনো পাওয়া যায়নি।</p>';
+                        return;
+                    }
+
+                    const tabs = groups.map((g, i) => {
+                        const label = g.group ? g.group.replace('GROUP_', 'Group ') : `Group ${i + 1}`;
+                        return `<button class="std-tab${i === 0 ? ' active' : ''}" data-idx="${i}">${label}</button>`;
+                    }).join('');
+
+                    const panels = groups.map((g, i) => {
+                        const rows = (g.table || []).map(row => {
+                            const p = row.position;
+                            const pCls = p <= 2 ? `p${p}` : p === 3 ? 'p3' : 'p4';
+                            const gd = row.goalDifference;
+                            const gdStr = gd > 0 ? `<span class="gd-pos">+${gd}</span>` : gd < 0 ? `<span class="gd-neg">${gd}</span>` : gd;
+                            const name = row.team?.shortName || row.team?.name || '?';
+                            return `<tr>
+                                <td><span class="pos-num ${pCls}">${p}</span></td>
+                                <td class="team-cell">${name}</td>
+                                <td>${row.playedGames}</td>
+                                <td>${row.won}</td>
+                                <td>${row.draw}</td>
+                                <td>${row.lost}</td>
+                                <td>${row.goalsFor}</td>
+                                <td>${row.goalsAgainst}</td>
+                                <td>${gdStr}</td>
+                                <td class="pts-cell">${row.points}</td>
+                            </tr>`;
+                        }).join('');
+                        return `<div class="std-panel${i === 0 ? ' active' : ''}" data-panel="${i}">
+                            <table class="standings-table">
+                                <thead><tr>
+                                    <th>#</th><th>দল</th><th>ম্যাচ</th><th>জয়</th><th>ড্র</th><th>হার</th><th>GF</th><th>GA</th><th>GD</th><th>পয়েন্ট</th>
+                                </tr></thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>`;
+                    }).join('');
+
+                    box.innerHTML = `<div class="standings-tabs">${tabs}</div><div>${panels}</div>`;
+
+                    box.querySelectorAll('.std-tab').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const idx = btn.dataset.idx;
+                            box.querySelectorAll('.std-tab').forEach(b => b.classList.remove('active'));
+                            box.querySelectorAll('.std-panel').forEach(p => p.classList.remove('active'));
+                            btn.classList.add('active');
+                            box.querySelector(`.std-panel[data-panel="${idx}"]`).classList.add('active');
+                        });
+                    });
+                } catch (e) {
+                    box.innerHTML = '<p class="muted" style="padding:16px">পয়েন্ট টেবিল লোড করতে সমস্যা হয়েছে।</p>';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadResults();
+                loadStandings();
+                document.getElementById('refreshResults')?.addEventListener('click', loadResults);
+            });
+        })();
+
         window.addEventListener('DOMContentLoaded', () => {
             const button = document.getElementById('downloadFixture');
             const poster = document.getElementById('fixturePoster');
@@ -950,6 +1573,28 @@
 
             updateFixtures();
         });
+
+        /* ── BDT Live Clock ── */
+        (function () {
+            const clockEl = document.getElementById('bdtClock');
+            const dateEl  = document.getElementById('bdtDate');
+            if (!clockEl) return;
+            const days = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+            function tick() {
+                const now = new Date(Date.now() + 6 * 3600000);
+                const h = String(now.getUTCHours()).padStart(2, '0');
+                const m = String(now.getUTCMinutes()).padStart(2, '0');
+                const s = String(now.getUTCSeconds()).padStart(2, '0');
+                clockEl.textContent = `${h}:${m}:${s}`;
+                if (dateEl) {
+                    const day = days[now.getUTCDay()];
+                    const date = now.toUTCString().slice(5, 16);
+                    dateEl.textContent = `${day}, ${date}`;
+                }
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
     </script>
 </body>
 
