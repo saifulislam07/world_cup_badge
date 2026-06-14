@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->middleware('visitor.log')->name('home');
 Route::get('/today-match', [HomeController::class, 'todayMatches'])->middleware('visitor.log')->name('today-match');
+Route::get('/fixtures',    [HomeController::class, 'fixtures'])->middleware('visitor.log')->name('fixtures');
+Route::get('/standings',   [HomeController::class, 'standings'])->middleware('visitor.log')->name('standings');
 Route::post('/download-count', [PlacardController::class, 'storeDownload'])->middleware('throttle:20,1')->name('download-count');
 Route::get('/country-ranking', [PlacardController::class, 'ranking'])->middleware('visitor.log')->name('country-ranking');
 Route::get('/api/wc2026/results', [HomeController::class, 'wcResults'])->middleware('throttle:30,1');
