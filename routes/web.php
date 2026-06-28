@@ -10,7 +10,6 @@ Route::get('/today-match', [HomeController::class, 'todayMatches'])->middleware(
 Route::get('/fixtures',    [HomeController::class, 'fixtures'])->middleware('visitor.log')->name('fixtures');
 Route::get('/standings',   [HomeController::class, 'standings'])->middleware('visitor.log')->name('standings');
 Route::post('/download-count', [PlacardController::class, 'storeDownload'])->middleware('throttle:20,1')->name('download-count');
-Route::get('/country-ranking', [PlacardController::class, 'ranking'])->middleware('visitor.log')->name('country-ranking');
 Route::get('/api/wc2026/results', [HomeController::class, 'wcResults'])->middleware('throttle:30,1');
 Route::get('/api/wc2026/standings', [HomeController::class, 'wcStandings'])->middleware('throttle:30,1');
 

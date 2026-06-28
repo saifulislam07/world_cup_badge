@@ -195,7 +195,6 @@
         <a href="{{ route('today-match') }}"     @class(['active' => request()->routeIs('today-match')])>Today</a>
         <a href="{{ route('fixtures') }}"        @class(['active' => request()->routeIs('fixtures')])>Fixtures</a>
         <a href="{{ route('standings') }}"       @class(['active' => request()->routeIs('standings')])>Standings</a>
-        <a href="{{ route('country-ranking') }}" @class(['active' => request()->routeIs('country-ranking')])>Ranking</a>
     </nav>
 </header>
 

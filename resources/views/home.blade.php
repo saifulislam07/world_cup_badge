@@ -658,13 +658,12 @@
 
 <body>
     <header class="topbar">
-        <div class="brand"><span
-                class="brand-mark">26</span>{{ $settings['website_name'] ?? 'World Cup 2026 Badge Maker' }}</div>
+        <div class="brand"><span class="brand-mark">26</span>{{ $settings['website_name'] ?? 'World Cup 2026 Badge Maker' }}</div>
         <nav class="nav">
-            <a href="{{ route('today-match') }}">Today's Match</a>
-            <a href="{{ route('country-ranking') }}">Ranking</a>
-            {{-- <a class="admin-link"
-                href="{{ route('admin.login') }}">Admin</a> --}}
+            <a href="{{ route('home') }}" style="background:linear-gradient(135deg,#063d2a,#005eb8);color:#fff;border-color:transparent">Badge</a>
+            <a href="{{ route('today-match') }}">Today</a>
+            <a href="{{ route('fixtures') }}">Fixtures</a>
+            <a href="{{ route('standings') }}">Standings</a>
         </nav>
     </header>
 
